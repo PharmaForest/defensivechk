@@ -89,6 +89,40 @@ run;
 /* Execute Pattern 1 */
 %demo_ok;
 ~~~
-<img width="610" height="106" alt="image" src="https://github.com/user-attachments/assets/d8cf7ba6-c3a2-45f6-ba9e-b728c5db101d" />
+<img width="610" height="106" alt="image" src="https://github.com/user-attachments/assets/d8cf7ba6-c3a2-45f6-ba9e-b728c5db101d" /> 
 
+### Pattern 2: Required macro parameter missing (INVAR not set)
+~~~sas
+/*----------------------------------------------------------
+  Pattern 2: Required macro parameter missing (INVAR not set)
+----------------------------------------------------------*/
+%macro demo_missing_param;
+    %local ds invar outstat;
+
+    %let ds      = work.adsl;
+    /* %let invar = AVAL;   <-- left intentionally blank to trigger validation failure */
+    %let outstat = work.summary_ng_param;
+
+    %put NOTE: *** Pattern 2: Missing required macro parameter (INVAR) ***;
+
+    /* This will trigger an error inside defensivechk due to missing INVAR */
+    %defensivechk(
+        reqparmlst = ds invar outstat,
+        reqvardsn  = &ds,
+        reqvarlst  = USUBJID &invar   /* &invar is empty → intentionally failing */
+    );
+
+    /* This block will NOT be executed because %abort stops execution */
+    proc means data=&ds noprint;
+        class TRT01P;
+        var &invar;
+        output out=&outstat mean=mean_aval;
+    run;
+
+%mend demo_missing_param;
+
+/* Running this macro will abort the job due to failure */
+%demo_missing_param;
+~~~
+<img width="704" height="192" alt="image" src="https://github.com/user-attachments/assets/e765f9b1-e3b7-4c93-b50c-6deaa3076edc" />
 
