@@ -3,7 +3,7 @@ This repository contains a SAS macro designed to perform defensive checks on mac
 ### This repository is an adapted version of Saikrishnareddy Yengannagari’s original package ([https://github.com/kusy2009/defensivechk](https://github.com/kusy2009/sas-defensive-check-macro)) tailored for the SAS Package Framework, and the original license remains the property of Saikrishnareddy Yengannagari.　　
 
 
-<img width="180" height="180" alt="defensivechk_small" src="https://github.com/user-attachments/assets/4b9c7271-dbf1-46dc-a9e5-c4ed0740065d" />
+<img width="360" height="360" alt="defensivechk_small" src="https://github.com/user-attachments/assets/4b9c7271-dbf1-46dc-a9e5-c4ed0740065d" />
 
 
 ## Overview
@@ -195,6 +195,8 @@ run;
 /* Running this macro will abort the job because the dataset does not exist */
 %demo_missing_dataset;
 ~~~
+<img width="1000" height="132" alt="image" src="https://github.com/user-attachments/assets/af3a593d-5f12-4816-912d-c18f5122024b" />
+
 
 ## version history
 1.0.0(21Nov2025): Initial version
