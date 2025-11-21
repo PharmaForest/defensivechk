@@ -161,4 +161,54 @@ run;
 ~~~
 <img width="1006" height="148" alt="image" src="https://github.com/user-attachments/assets/876bf994-7c03-41a8-b3bf-cc58376da699" />
 
+### Pattern 4: Dataset does NOT exist
+~~~sas
+/*----------------------------------------------------------
+  Pattern 4: Dataset does NOT exist
+----------------------------------------------------------*/
+%macro demo_missing_dataset;
+    %local ds invar outstat;
+
+    /* Assign a non-existing dataset name */
+    %let ds      = work.not_exist;
+    %let invar   = AVAL;
+    %let outstat = work.summary_ng_ds;
+
+    %put NOTE: *** Pattern 4: Required dataset does NOT exist ***;
+
+    /* This check will fail because work.not_exist does not exist */
+    %defensivechk(
+        reqparmlst = ds invar outstat,
+        reqvardsn  = &ds,
+        reqvarlst  = USUBJID TRT01P &invar
+    );
+
+    /* This block will NOT be executed because %abort stops processing */
+    proc means data=&ds noprint;
+        class TRT01P;
+        var &invar;
+        output out=&outstat mean=mean_aval;
+    run;
+
+%mend demo_missing_dataset;
+
+/* Running this macro will abort the job because the dataset does not exist */
+%demo_missing_dataset;
+~~~
+
+## version history
+1.0.0(21Nov2025): Initial version
+
+## What is SAS Packages?  
+The package is built on top of **SAS Packages framework(SPF)** developed by Bartosz Jablonski.
+For more information about SAS Packages framework, see [SAS_PACKAGES](https://github.com/yabwon/SAS_PACKAGES).  
+You can also find more SAS Packages(SASPACs) in [SASPAC](https://github.com/SASPAC).
+
+## How to use SAS Packages? (quick start)
+### 1. Set-up SPF(SAS Packages Framework)
+Firstly, create directory for your packages and assign a fileref to it.
+~~~sas      
+filename packages "\path\to\your\packages";
+~~~
+
 
