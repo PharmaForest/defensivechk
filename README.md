@@ -32,3 +32,61 @@ reqvarlst: A space-separated list of required variables that must exist in the d
 ~~~
 
 ## Example Usage:
+~~~sas
+/*----------------------------------------------------------
+  0. Create test datasets
+     - ADSL-like dataset
+     - A dataset missing TRT01P for negative test
+----------------------------------------------------------*/
+data work.adsl;
+    length USUBJID $10 TRT01P $8 AVAL 8;
+    do i = 1 to 5;
+        USUBJID = cats('SUBJ', put(i, z2.));
+        TRT01P  = ifc(mod(i,2)=1, 'A', 'B');
+        AVAL    = i * 10;
+        output;
+    end;
+    drop i;
+run;
+
+/* Dataset missing TRT01P for validation failure testing */
+data work.adsl_ntrt;
+    set work.adsl;
+    drop TRT01P;
+run;
+~~~
+
+~~~sas
+/*----------------------------------------------------------
+  Pattern 1: All required conditions satisfied (Positive case)
+----------------------------------------------------------*/
+%macro demo_ok;
+    %local ds invar outstat;
+
+    %let ds      = work.adsl;
+    %let invar   = AVAL;
+    %let outstat = work.summary_ok;
+
+    %put NOTE: *** Pattern 1: All checks pass successfully ***;
+
+    /* Run defensive checks */
+    %defensivechk(
+        reqparmlst = ds invar outstat,
+        reqvardsn  = &ds,
+        reqvarlst  = USUBJID TRT01P &invar
+    );
+
+    /* Main processing executed only if checks pass */
+    proc means data=&ds noprint;
+        class TRT01P;
+        var &invar;
+        output out=&outstat mean=mean_aval;
+    run;
+
+%mend demo_ok;
+
+/* Execute Pattern 1 */
+%demo_ok;
+~~~
+
+
