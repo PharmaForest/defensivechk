@@ -56,6 +56,7 @@ data work.adsl_ntrt;
 run;
 ~~~
 
+### Pattern 1: All required conditions satisfied (Positive case)
 ~~~sas
 /*----------------------------------------------------------
   Pattern 1: All required conditions satisfied (Positive case)
@@ -88,5 +89,6 @@ run;
 /* Execute Pattern 1 */
 %demo_ok;
 ~~~
+<img width="305" height="53" alt="image" src="https://github.com/user-attachments/assets/d8cf7ba6-c3a2-45f6-ba9e-b728c5db101d" />
 
 
