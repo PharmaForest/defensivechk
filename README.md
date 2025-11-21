@@ -126,3 +126,39 @@ run;
 ~~~
 <img width="704" height="192" alt="image" src="https://github.com/user-attachments/assets/e765f9b1-e3b7-4c93-b50c-6deaa3076edc" />
 
+### Pattern 3: Dataset exists but required variable missing
+~~~sas
+/*----------------------------------------------------------
+  Pattern 3: Dataset exists but required variable missing
+----------------------------------------------------------*/
+%macro demo_missing_var;
+    %local ds invar outstat;
+
+    %let ds      = work.adsl_ntrt;   /* Dataset missing TRT01P */
+    %let invar   = AVAL;
+    %let outstat = work.summary_ng_var;
+
+    %put NOTE: *** Pattern 3: Required variable TRT01P is missing in dataset ***;
+
+    /* This will trigger an error for missing TRT01P */
+    %defensivechk(
+        reqparmlst = ds invar outstat,
+        reqvardsn  = &ds,
+        reqvarlst  = USUBJID TRT01P &invar
+    );
+
+    /* This block will NOT be executed because %abort stops processing */
+    proc means data=&ds noprint;
+        class TRT01P;
+        var &invar;
+        output out=&outstat mean=mean_aval;
+    run;
+
+%mend demo_missing_var;
+
+/* Running this macro will abort the job due to missing variable */
+%demo_missing_var;
+~~~
+<img width="1006" height="148" alt="image" src="https://github.com/user-attachments/assets/876bf994-7c03-41a8-b3bf-cc58376da699" />
+
+
